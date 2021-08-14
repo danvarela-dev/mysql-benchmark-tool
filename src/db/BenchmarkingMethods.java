@@ -84,7 +84,8 @@ public class BenchmarkingMethods {
                                 String FK_Table = "";
                                 String FK_ColumnName = "";
                                 //VALUES TO INSERT
-                                for (int i = 1; i <= resMD.getColumnCount(); i++) {
+                                for (int i = 1; i <= resMD.getColumnCount() ; i++) {
+                                    
                                     while (resFK.next()) {
                                         if (resMD.getColumnName(i).equals(resFK.getString("PKCOLUMN_NAME"))) {
                                             isFK = true;
@@ -132,11 +133,13 @@ public class BenchmarkingMethods {
                                             conn_methods.popUpErrorMsg("Referenced Column '" + FK_ColumnName + "' in referenced table '" + FK_Table.toUpperCase() + "' is empty...");
                                             return null;
                                         } else {
+                                            System.gc();
                                             //otherwise choose random foreign key
                                             resFK_Table.last();
                                             int randFK = ((int) (Math.random() * (resFK_Table.getRow() - 1))) + 1;
                                             int index = 0;
                                             resFK_Table.beforeFirst();
+                                            System.out.println("FK : " + FK_ColumnName);
                                             while (resFK_Table.next()) {
                                                 if (index == randFK) {
                                                     SQL_INSERT += resFK_Table.getString(FK_ColumnName);
@@ -145,22 +148,23 @@ public class BenchmarkingMethods {
                                             }
                                         }
                                     }
-                                    if (resMD.isAutoIncrement(i) == false && i < resMD.getColumnCount()) {
+                                    if (resMD.isAutoIncrement(i) == false && i < resMD.getColumnCount() ) {
                                         SQL_INSERT += ",";
                                     }
                                 }
                                 SQL_INSERT += ")";
 
                                 window.jTextArea1.append(k + "  Inserting data into " + row.get(1).toString() + " ...\n");
-
-                                conn.createStatement().executeUpdate(SQL_INSERT);
+                                   System.out.println(SQL_INSERT); 
+                            conn.createStatement().executeUpdate(SQL_INSERT);
+                                   System.gc();
                             }
 
                         }
                         
                         System.gc();
                     }
-                                        conn_methods.popUpSuccessMsg("Tables Filled!");
+                                       // conn_methods.popUpSuccessMsg("Tables Filled!");
 
                 } catch (SQLException e) {
                     window.jTextArea1.append("Failed...");
